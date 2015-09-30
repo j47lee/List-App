@@ -40,7 +40,7 @@ app.get('/contactList', function(req,res){
   })
 })
 
-//POST request from $http.post
+//POST request from controller
 app.post('/contactList', function(req,res){
   console.log(req.body);
   //Doing two things: saves form data into db and the res.json sends the data to controller
@@ -49,10 +49,20 @@ app.post('/contactList', function(req,res){
   })
 })
 
+//DELETE request from controller
 app.delete('/contactList/:id', function(req,res){
   var id = req.params.id;
   console.log(id);
   db.contactList.remove({_id: mongojs.ObjectId(id)}, function(err,doc){
+    res.json(doc);
+  })
+})
+
+//GET request from controller to edit/update
+app.get('/contactList/:id', function(req,res){
+  var id = req.params.id;
+  console.log(id);
+  db.contactList.findOne({_id: mongojs.ObjectId(id)}, function(err,doc){
     res.json(doc);
   })
 })

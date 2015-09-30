@@ -34,4 +34,11 @@ refresh();
       })
     }
 
+    $scope.edit = function(id){
+      console.log(id);
+      $http.get('/contactList/' + id).success(function(res){
+        $scope.newContact = res;
+      })
+    }
+
 }]); //end myApp controller
