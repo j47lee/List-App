@@ -1,71 +1,55 @@
-var express    = require('express');
-var mongoose   = require('mongoose');
+var express = require('express');
+var app = express();
+var mongojs = require('mongojs');
+var db = mongojs('contactlist', ['contactlist']);
 var bodyParser = require('body-parser');
-var mongojs    = require('mongojs'); //communicate with mongoDB
-var db         = mongojs('contactList',['contactList'])
-var app        = express();
 
-// //Contact Schema
-// var Schema = mongoose.Schema;
-// var contactSchema = new Schema({
-//   name:  String,
-//   email: String,
-//   number:   String
-// });
-// //Contact Model
-// var Contact = mongoose.model('Contact', contactSchema);
-//
-// //connect to mongolab
-// mongoose.connect('mongodb://admin:password@ds051923.mongolab.com:51923/list-db');
-//
-// var db = mongoose.connection
-// db.on('error', console.error.bind(console, 'connection error:'))
-// db.once('connected', function(someData){
-//  console.log('We are connected to MongoDB')
-// });
-
-//Tells our app where to find our static pages
 app.use(express.static(__dirname + '/public'));
-//Use bodyparser to parse through body data received from form
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-//GET request from $http.get /contactList route
-app.get('/contactList', function(req,res){
-  console.log('GET requested received');
+app.get('/contactlist', function (req, res) {
+  console.log('I received a GET request');
 
-  //retrieve all contacts from mongoDB
-  db.contactList.find(function(err,docs){
+  db.contactlist.find(function (err, docs) {
     console.log(docs);
-    res.json(docs)
-  })
-})
+    res.json(docs);
+  });
+});
 
-//POST request from controller
-app.post('/contactList', function(req,res){
+app.post('/contactlist', function (req, res) {
   console.log(req.body);
-  //Doing two things: saves form data into db and the res.json sends the data to controller
-  db.contactList.insert(req.body, function(err, doc){
-    res.json(doc)
-  })
-})
+  db.contactlist.insert(req.body, function(err, doc) {
+    res.json(doc);
+  });
+});
 
-//DELETE request from controller
-app.delete('/contactList/:id', function(req,res){
+app.delete('/contactlist/:id', function (req, res) {
   var id = req.params.id;
   console.log(id);
-  db.contactList.remove({_id: mongojs.ObjectId(id)}, function(err,doc){
+  db.contactlist.remove({_id: mongojs.ObjectId(id)}, function (err, doc) {
     res.json(doc);
-  })
-})
+  });
+});
 
-//GET request from controller to edit/update
-app.get('/contactList/:id', function(req,res){
+app.get('/contactlist/:id', function (req, res) {
   var id = req.params.id;
   console.log(id);
-  db.contactList.findOne({_id: mongojs.ObjectId(id)}, function(err,doc){
+  db.contactlist.findOne({_id: mongojs.ObjectId(id)}, function (err, doc) {
     res.json(doc);
-  })
-})
+  });
+});
 
-app.listen('3000');
-console.log('Listening to local host 3000');
+app.put('/contactlist/:id', function (req, res) {
+  var id = req.params.id;
+  console.log(req.body.name);
+  db.contactlist.findAndModify({
+    query: {_id: mongojs.ObjectId(id)},
+    update: {$set: {name: req.body.name, email: req.body.email, number: req.body.number}},
+    new: true}, function (err, doc) {
+      res.json(doc);
+    }
+  );
+});
+
+app.listen(3000);
+console.log("Server running on port 3000");
