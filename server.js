@@ -8,7 +8,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 app.get('/contactlist', function (req, res) {
-  console.log('I received a GET request');
+  console.log('GET request received from controller to server');
 
   db.contactlist.find(function (err, docs) {
     console.log(docs);
@@ -52,4 +52,4 @@ app.put('/contactlist/:id', function (req, res) {
 });
 
 app.listen(3000);
-console.log("Server running on port 3000");
+console.log("Listening to Local Host 3000");
