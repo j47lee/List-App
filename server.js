@@ -44,12 +44,12 @@ app.put('/contactlist/:id', function (req, res) {
   console.log(req.body.name);
   db.contactlist.findAndModify({
     query: {_id: mongojs.ObjectId(id)},
-    update: {$set: {name: req.body.name, email: req.body.email, number: req.body.number}},
+    update: {$set: {name: req.body.name, company: req.body.company, email: req.body.email, number: req.body.number, notes: req.body.notes}},
     new: true}, function (err, doc) {
       res.json(doc);
     }
   );
 });
 
-app.listen(3000);
-console.log("Listening to Local Host 3000");
+app.listen(9292);
+console.log("Listening to Local Host 9292");
